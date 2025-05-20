@@ -649,6 +649,113 @@
                 </ul>
             </div>
          </div>
+        
+        <!-- Panel analisis de flujo de caja Inteligente -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Análisis de Flujo de Caja Inteligente</h2>
+                <!--<a class="panel-link" onclick="toggleModal('cashflowModal')">Ver análisis completo</a>-->
+            </div>
+            <div style="padding: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <div style="flex: 1; padding: 10px; background: #e8f5e9; border-radius: 8px; margin-right: 10px;">
+                        <h3 style="margin: 0 0 5px 0; color: #2e7d32;">Días positivos</h3>
+                        <p style="font-size: 24px; margin: 0; font-weight: 700; color: #2e7d32;">22/30</p>
+                    </div>
+                    <div style="flex: 1; padding: 10px; background: #ffebee; border-radius: 8px;">
+                        <h3 style="margin: 0 0 5px 0; color: #c62828;">Días críticos</h3>
+                        <p style="font-size: 24px; margin: 0; font-weight: 700; color: #c62828;">3/30</p>
+                    </div>
+                </div>
+                
+                <div style="background: #f5f5f5; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                    <h3 style="margin-top: 0; color: #333;">Recomendación de IA</h3>
+                    <p style="margin-bottom: 0;">Tu flujo de caja es saludable. Considera invertir el excedente en mejorar tu inventario para el próximo trimestre.</p>
+                </div>
+                
+                <div style="height: 200px; background: #fff; border-radius: 8px; padding: 10px;">
+                    <canvas id="miniCashflowChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Alertas Inteligentes -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Alertas Inteligentes</h2>
+                <!--<a class="panel-link" onclick="toggleModal('alertsModal')">Ver todas</a>-->
+            </div>
+            <div class="event-list">
+                <div class="event-item" style="border-left-color: #ff9800;">
+                    <div class="event-info">
+                        <h3 class="event-title">Posible retraso en pago</h3>
+                        <p class="event-amount">Cliente: Constructora XYZ (15% de probabilidad)</p>
+                    </div>
+                    <span class="event-date">Recomendación: Contactar</span>
+                </div>
+                <div class="event-item" style="border-left-color: #4caf50;">
+                    <div class="event-info">
+                        <h3 class="event-title">Oportunidad de descuento</h3>
+                        <p class="event-amount">Proveedor: Materiales S.A. (5% por pago anticipado)</p>
+                    </div>
+                    <span class="event-date">Válido hasta 25/05</span>
+                </div>
+                <div class="event-item" style="border-left-color: #2196f3;">
+                    <div class="event-info">
+                        <h3 class="event-title">Patrón detectado</h3>
+                        <p class="event-amount">Los martes tienen 30% más ventas que el promedio</p>
+                    </div>
+                    <span class="event-date">Basado en 6 meses</span>
+                </div>
+            </div>
+        </div>
+
+        <!--Panel Comparativa con el mercado-->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Comparativa con tu Sector</h2>
+                <!--<a class="panel-link" onclick="toggleModal('benchmarkModal')">Ver detalles</a>-->
+            </div>
+            <div style="padding: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                    <div style="flex: 1; text-align: center;">
+                        <h3 style="margin: 0 0 5px 0; color: #333;">Margen Bruto</h3>
+                        <div style="height: 120px; position: relative;">
+                            <div style="position: absolute; bottom: 0; width: 40%; left: 30%; height: 60%; background: #e0e0e0; border-radius: 4px 4px 0 0;">
+                                <div style="position: absolute; top: -20px; width: 100%; text-align: center; font-weight: bold;">35%</div>
+                            </div>
+                            <div style="position: absolute; bottom: 0; width: 40%; left: 30%; height: 80%; background: #4caf50; border-radius: 4px 4px 0 0;">
+                                <div style="position: absolute; top: -20px; width: 100%; text-align: center; font-weight: bold; color: #fff;">45%</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 5px;">
+                            <span style="margin-right: 15px;">Sector</span>
+                            <span style="font-weight: bold;">Finaxis</span>
+                        </div>
+                    </div>
+                    
+                    <div style="flex: 1; text-align: center;">
+                        <h3 style="margin: 0 0 5px 0; color: #333;">Rotación de Inventario</h3>
+                        <div style="height: 120px; position: relative;">
+                            <div style="position: absolute; bottom: 0; width: 40%; left: 30%; height: 70%; background: #e0e0e0; border-radius: 4px 4px 0 0;">
+                                <div style="position: absolute; top: -20px; width: 100%; text-align: center; font-weight: bold;">5.2x</div>
+                            </div>
+                            <div style="position: absolute; bottom: 0; width: 40%; left: 30%; height: 60%; background: #ff9800; border-radius: 4px 4px 0 0;">
+                                <div style="position: absolute; top: -20px; width: 100%; text-align: center; font-weight: bold; color: #fff;">4.8x</div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 5px;">
+                            <span style="margin-right: 15px;">Sector</span>
+                            <span style="font-weight: bold;">Finaxis</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: #e3f2fd; border-radius: 8px; padding: 10px; text-align: center;">
+                    <p style="margin: 0;">Tu margen bruto es <strong>28.6% mejor</strong> que el promedio de tu sector</p>
+                </div>
+            </div>
+        </div>
 
          <!-- Panel sencillo de Monitoreo del Mercado -->
         <div class="panel">
