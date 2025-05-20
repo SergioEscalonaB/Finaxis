@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        /* Barra de navegación */
+        .navbar {
+            background-color: #4285f4;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .nav-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Contenedor principal */
+        .container {
+            padding: 20px;
+        }
+        
+        .panel {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+        
+        .panel-link {
+            color: #4285f4;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .panel-link:hover {
+            text-decoration: underline;
+        }
+        
+        .event-list {
+            padding: 0;
+        }
+        
+        .event-item {
+            display: flex;
+            padding: 16px 20px;
+            border-left: 4px solid #4285f4;
+            background-color: #f8f9fe;
+            margin-bottom: 2px;
+            position: relative;
+        }
+        
+        .event-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .event-info {
+            flex-grow: 1;
+        }
+        
+        .event-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 4px 0;
+            color: #1e293b;
+        }
+        
+        .event-amount {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .event-date {
+            font-size: 14px;
+            color: #666;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        /* Colores para diferentes tipos de eventos */
+        .event-pago {
+            border-left-color: #ea4335;
+        }
+        
+        .event-cobro {
+            border-left-color: #34a853;
+        }
+        
+        .event-nomina {
+            border-left-color: #fbbc05;
+        }
+        
+        /* Colores para otros paneles */
+        .resumen-item {
+            border-left-color: #4285f4;
+        }
+        
+        .pendiente-item {
+            border-left-color: #9c27b0;
+        }
+
+        .proyeccion-item {
+            border-left-color: #009688;
+        }
+        
+        /* Tarjetas de resumen */
+        .resumen-cards {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .resumen-card {
+            background-color: #f8f9fe;
+            padding: 16px;
+            flex: 1;
+            min-width: 200px;
+            border-radius: 8px;
+        }
+        
+        .resumen-card-title {
+            font-size: 14px;
+            color: #666;
+            margin: 0 0 8px 0;
+        }
+        
+        .resumen-card-value {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .positivo {
+            color: #34a853;
+        }
+        
+        .negativo {
+            color: #ea4335;
+        }
+        
+        .neutral {
+            color: #4285f4;
+        }
+        
+        /* Modales */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 50px auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+        
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f2f5;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .close-button:hover {
+            color: #333;
+        }
+        
+        /* Calendario */
+        .calendar {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        .calendar th {
+            background-color: #f0f2f5;
+            padding: 10px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .calendar td {
+            border: 1px solid #eaedf0;
+            height: 100px;
+            width: 14.28%;
+            padding: 8px;
+            vertical-align: top;
+        }
+        
+        .calendar-day {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+        
+        .calendar-event {
+            background-color: #e8f0fe;
+            border-left: 3px solid #4285f4;
+            padding: 4px 8px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            border-radius: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .calendar-event.pago {
+            background-color: #fcebe9;
+            border-left-color: #ea4335;
+        }
+        
+        .calendar-event.cobro {
+            background-color: #e6f4ea;
+            border-left-color: #34a853;
+        }
+        
+        .calendar-event.nomina {
+            background-color: #fef8e2;
+            border-left-color: #fbbc05;
+        }
+        
+        .calendar-event.reunion {
+            background-color: #f3e8fd;
+            border-left-color: #9c27b0;
+        }
+        
+        /* Tabla de usuarios */
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .user-table th, .user-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        
+        .user-table th {
+            background-color: #f8f9fe;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .user-table tbody tr:hover {
+            background-color: #f8f9fe;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .user-action-button {
+            background-color: #f0f2f5;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .user-action-button:hover {
+            background-color: #e4e6eb;
+        }
+        
+        .user-status {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-activo {
+            background-color: #e6f4ea;
+            color: #34a853;
+        }
+        
+        .status-inactivo {
+            background-color: #fcebe9;
+            color: #ea4335;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Estilos para el panel de configuración */
+        .config-panel {
+            padding: 15px;
+        }
+        
+        .config-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        
+        .config-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .config-section h4 {
+            font-size: 16px;
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .config-item {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .config-item label {
+            width: 180px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+        
+        .config-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .config-input:focus {
+            border-color: #4285f4;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+        }
+        
+        .theme-options {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-item label {
+            width: auto;
+        }
+        
+        .config-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 0 15px 15px;
+        }
+        
+        .config-button {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .config-button.save {
+            background-color: #4285f4;
+            color: white;
+        }
+        
+        .config-button.cancel {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+        
+        .config-button:hover {
+            opacity: 0.9;
+        }
+        
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .resumen-cards {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+            
+            .calendar td {
+                height: 60px;
+                padding: 4px;
+            }
+            
+            .user-table th, .user-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <div class="navbar">
+        <div class="logo">Finaxis - Panel principal</div>
+        <div class="nav-buttons">
+            <button class="nav-button" onclick="toggleModal('userModal')">Usuarios</button>
+            <button class="nav-button" onclick="toggleModal('configModal')">Configuración</button>
+            <button class="nav-button" onclick="toggleModal('accountModal')">Mi Cuenta</button>
+
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Panel de Próximos Eventos -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Próximos eventos</h2>
+                <a class="panel-link" onclick="toggleModal('calendarModal')">Ver calendario</a>
+            </div>
+            <div class="event-list">
+                <div class="event-item event-pago">
+                    <div class="event-info">
+                        <h3 class="event-title">Pago a proveedor</h3>
+                        <p class="event-amount">$1,200,000</p>
+                    </div>
+                    <span class="event-date">08 May, 2025</span>
+                </div>
+                <div class="event-item event-cobro">
+                    <div class="event-info">
+                        <h3 class="event-title">Cobro factura #F-0123</h3>
+                        <p class="event-amount">$3,500,000</p>
+                    </div>
+                    <span class="event-date">15 May, 2025</span>
+                </div>
+                <div class="event-item event-nomina">
+                    <div class="event-info">
+                        <h3 class="event-title">Pago de nómina</h3>
+                        <p class="event-amount">$5,800,000</p>
+                    </div>
+                    <span class="event-date">30 May, 2025</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel de Resumen Financiero -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Resumen financiero</h2>
+                <a class="panel-link" onclick="toggleModal('detailsModal-financiero')">Ver Resumen</a>
+
+            </div>
+            <div class="resumen-cards">
+                <div class="resumen-card">
+                    <p class="resumen-card-title">Ingresos mes actual</p>
+                    <p class="resumen-card-value positivo">$12,500,000</p>
+                </div>
+                <div class="resumen-card">
+                    <p class="resumen-card-title">Gastos mes actual</p>
+                    <p class="resumen-card-value negativo">$8,750,000</p>
+                </div>
+                <div class="resumen-card">
+                    <p class="resumen-card-title">Balance</p>
+                    <p class="resumen-card-value neutral">$3,750,000</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel de Tareas Pendientes -->
+        <div class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Tareas pendientes</h2>
+                <a class="panel-link" onclick="toggleModal('detailsModal-tareas')">Ver Todas</a>
+            </div>
+            <div class="event-list">
+                <div class="event-item pendiente-item">
+                    <div class="event-info">
+                        <h3 class="event-title">Revisión de presupuesto</h3>
+                        <p class="event-amount">Alta prioridad</p>
+                    </div>
+                    <span class="event-date">Hoy</span>
+                </div>
+                <div class="event-item pendiente-item">
+                    <div class="event-info">
+                        <h3 class="event-title">Reunión con contador</h3>
+                        <p class="event-amount">Media prioridad</p>
+                    </div>
+                    <span class="event-date">09 May, 2025</span>
+                </div>
+                <div class="event-item pendiente-item">
+                    <div class="event-info">
+                        <h3 class="event-title">Actualizar proyecciones</h3>
+                        <p class="event-amount">Baja prioridad</p>
+                    </div>
+                    <span class="event-date">14 May, 2025</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel de Proyecciones Inteligentes con IA -->
+        <div class="panel" >
+            <div class="panel-header" >
+                <h2 class="panel-title">Proyecciones Inteligentes Q2 2025</h2>
+                <!--<a href="#" class="panel-link" style="color: #4a90e2; font-weight: 600; text-decoration: none; font-size: 14px;">Ver informe completo</a> -->
+            </div>
+            <div class="ai-summary" style="background: #e8f0fe; border-radius: 8px; padding: 15px; margin-bottom: 20px; color: #1a237e;">
+                <strong>Predicción basada en IA:</strong> Se anticipa un crecimiento del <span style="color: #2e7d32; font-weight: 700;">12.4%</span> en ingresos gracias a la optimización de costos y nuevas oportunidades de mercado.
+            </div>
+
+            <div class="event-list" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="event-item ai-projection" style="background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
+                <div class="event-info">
+                    <h3 class="event-title" style="margin: 0; color: #34495e; font-weight: 600;">Ingresos proyectados con IA</h3>
+                    <p class="event-amount" style="font-size: 22px; font-weight: 700; color: #2e7d32;">$40,200,000</p>
+                </div>
+                <span class="event-date" style="color: #7f8c8d; font-weight: 600;">Q2 2025</span>
+                </div>
+
+                <div class="event-item ai-projection" style="background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
+                <div class="event-info">
+                    <h3 class="event-title" style="margin: 0; color: #34495e; font-weight: 600;">Reducción estimada de gastos</h3>
+                    <p class="event-amount" style="font-size: 22px; font-weight: 700; color: #c0392b;">-$3,500,000</p>
+                </div>
+                <span class="event-date" style="color: #7f8c8d; font-weight: 600;">Q2 2025</span>
+                </div>
+
+                <div class="event-item ai-projection" style="background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;">
+                <div class="event-info">
+                    <h3 class="event-title" style="margin: 0; color: #34495e; font-weight: 600;">Beneficio neto proyectado</h3>
+                    <p class="event-amount" style="font-size: 22px; font-weight: 700; color: #16a085;">$16,750,000</p>
+                </div>
+                <span class="event-date" style="color: #7f8c8d; font-weight: 600;">Q2 2025</span>
+                </div>
+            </div>
+
+            <div class="ai-recommendations" style="background: #fff3e0; border-radius: 8px; padding: 15px; margin-top: 20px; color: #e65100;">
+                <strong>Recomendaciones de IA:</strong>
+                <ul style="margin: 8px 0 0 20px; padding: 0; list-style-type: disc;">
+                <li>Invertir en automatización para reducir costos operativos.</li>
+                <li>Optimizar campañas de marketing digital para captar nuevos clientes.</li>
+                <li>Monitorear indicadores clave semanalmente para anticipar desviaciones.</li>
+                </ul>
+            </div>
+         </div>
+
+         <!-- Panel sencillo de Monitoreo del Mercado -->
+        <div class="panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 style="color: #2c3e50; font-weight: 700; font-size: 20px;">Monitoreo del Mercado</h2>
+                <button onclick="alert('Actualizando datos...')" style="background: #4a90e2; color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 14px;">Actualizar</button>
+            </div>
+
+            <div style="display: flex; justify-content: space-around; gap: 15px; flex-wrap: wrap;">
+
+                <div style="background: #d1e7dd; border-radius: 8px; padding: 15px; flex: 1 1 150px; text-align: center; color: #0f5132;">
+                <h3 style="margin: 0 0 8px 0;">📈 Oportunidad</h3>
+                <p style="margin: 0; font-weight: 700;">Comprar productos</p>
+                <small>Precios al alza</small>
+                </div>
+
+                <div style="background: #f8d7da; border-radius: 8px; padding: 15px; flex: 1 1 150px; text-align: center; color: #842029;">
+                <h3 style="margin: 0 0 8px 0;">⚠️ Riesgo</h3>
+                <p style="margin: 0; font-weight: 700;">Ventas en calle</p>
+                <small>Mal tiempo</small>
+                </div>
+
+                <div style="background: #fff3cd; border-radius: 8px; padding: 15px; flex: 1 1 150px; text-align: center; color: #664d03;">
+                <h3 style="margin: 0 0 8px 0;">🚚 Logística</h3>
+                <p style="margin: 0; font-weight: 700;">Planificar rutas</p>
+                <small>Bloqueos viales</small>
+                </div>
+        </div>
+    </div>
+    
+
+    <!-- Modal de Calendario -->
+    <div id="calendarModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Calendario - Mayo 2025</h3>
+                <button class="close-button" onclick="toggleModal('calendarModal')">&times;</button>
+            </div>
+            <table class="calendar">
+                <thead>
+                    <tr>
+                        <th>Lun</th>
+                        <th>Mar</th>
+                        <th>Mié</th>
+                        <th>Jue</th>
+                        <th>Vie</th>
+                        <th>Sáb</th>
+                        <th>Dom</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="calendar-day">29</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">30</div>
+                            <div class="calendar-event nomina">Pago nómina Abril</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">1</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">2</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">3</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">4</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">5</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="calendar-day">6</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">7</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">8</div>
+                            <div class="calendar-event pago">Pago a proveedor</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">9</div>
+                            <div class="calendar-event reunion">Reunión contador</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">10</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">11</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">12</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="calendar-day">13</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">14</div>
+                            <div class="calendar-event reunion">Actualizar proyecciones</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">15</div>
+                            <div class="calendar-event cobro">Cobro factura #F-0123</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">16</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">17</div>
+                            <div class="calendar-event reunion">Junta directiva</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">18</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">19</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="calendar-day">20</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">21</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">22</div>
+                            <div class="calendar-event cobro">Cobro factura #F-0124</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">23</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">24</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">25</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">26</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="calendar-day">27</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">28</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">29</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">30</div>
+                            <div class="calendar-event nomina">Pago de nómina</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">31</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">1</div>
+                        </td>
+                        <td>
+                            <div class="calendar-day">2</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Modal de Usuarios -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Gestión de Usuarios</h3>
+                <button class="close-button" onclick="toggleModal('userModal')">&times;</button>
+            </div>
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <img src="/api/placeholder/32/32" alt="Avatar" class="avatar">
+                                <span>Ana Martínez</span>
+                            </div>
+                        </td>
+                        <td>ana.martinez@finaxis.com</td>
+                        <td>Administrador</td>
+                        <td><span class="user-status status-activo">Activo</span></td>
+                        <td>
+                            <div class="user-actions">
+                                <button class="user-action-button">Editar</button>
+                                <button class="user-action-button">Desactivar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <img src="/api/placeholder/32/32" alt="Avatar" class="avatar">
+                                <span>Carlos Rodríguez</span>
+                            </div>
+                        </td>
+                        <td>carlos.rodriguez@finaxis.com</td>
+                        <td>Contador</td>
+                        <td><span class="user-status status-activo">Activo</span></td>
+                        <td>
+                            <div class="user-actions">
+                                <button class="user-action-button">Editar</button>
+                                <button class="user-action-button">Desactivar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <img src="/api/placeholder/32/32" alt="Avatar" class="avatar">
+                                <span>Laura Sánchez</span>
+                            </div>
+                        </td>
+                        <td>laura.sanchez@finaxis.com</td>
+                        <td>Finanzas</td>
+                        <td><span class="user-status status-activo">Activo</span></td>
+                        <td>
+                            <div class="user-actions">
+                                <button class="user-action-button">Editar</button>
+                                <button class="user-action-button">Desactivar</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <img src="/api/placeholder/32/32" alt="Avatar" class="avatar">
+                                <span>Miguel Torres</span>
+                            </div>
+                        </td>
+                        <td>miguel.torres@finaxis.com</td>
+                        <td>Visualizador</td>
+                        <td><span class="user-status status-inactivo">Inactivo</span></td>
+                        <td>
+                            <div class="user-actions">
+                                <button class="user-action-button">Editar</button>
+                                <button class="user-action-button">Activar</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 20px; text-align: right;">
+                <button class="nav-button" style="background-color: #4285f4;">Añadir Usuario</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Configuracion -->
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Configuración</h3>
+                <button class="close-button" onclick="toggleModal('configModal')">&times;</button>
+            </div>
+            <div class="config-panel">
+                <div class="config-section">
+                    <h4>Configuración General</h4>
+                    <div class="config-item">
+                        <label for="companyName">Nombre de la empresa:</label>
+                        <input type="text" id="companyName" value="Finaxis S.A." class="config-input">
+                    </div>
+                    <div class="config-item">
+                        <label for="fiscalYear">Año fiscal:</label>
+                        <select id="fiscalYear" class="config-input">
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label for="currency">Moneda principal:</label>
+                        <select id="currency" class="config-input">
+                            <option value="COP">Peso Colombiano (COP)</option>
+                            <option value="USD">Dólar Estadounidense (USD)</option>
+                            <option value="EUR">Euro (EUR)</option>
+                            <option value="MXN">Peso Mexicano (MXN)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="config-section">
+                    <h4>Preferencias de Visualización</h4>
+                    <div class="config-item">
+                        <label>Tema:</label>
+                        <div class="theme-options">
+                            <div class="theme-option">
+                                <input type="radio" id="themeLight" name="theme" checked>
+                                <label for="themeLight">Claro</label>
+                            </div>
+                            <div class="theme-option">
+                                <input type="radio" id="themeDark" name="theme">
+                                <label for="themeDark">Oscuro</label>
+                            </div>
+                            <div class="theme-option">
+                                <input type="radio" id="themeSystem" name="theme">
+                                <label for="themeSystem">Sistema</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <label for="dashboardLayout">Diseño del panel:</label>
+                        <select id="dashboardLayout" class="config-input">
+                            <option value="default">Predeterminado</option>
+                            <option value="compact">Compacto</option>
+                            <option value="expanded">Expandido</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="config-section">
+                    <h4>Notificaciones</h4>
+                    <div class="config-item checkbox-item">
+                        <input type="checkbox" id="notifyPayments" checked>
+                        <label for="notifyPayments">Notificar pagos próximos</label>
+                    </div>
+                    <div class="config-item checkbox-item">
+                        <input type="checkbox" id="notifyCollections" checked>
+                        <label for="notifyCollections">Notificar cobros pendientes</label>
+                    </div>
+                    <div class="config-item checkbox-item">
+                        <input type="checkbox" id="notifyTasks">
+                        <label for="notifyTasks">Notificar tareas pendientes</label>
+                    </div>
+                    <div class="config-item">
+                        <label for="notifyDays">Días de anticipación:</label>
+                        <select id="notifyDays" class="config-input">
+                            <option value="1">1 día</option>
+                            <option value="3" selected>3 días</option>
+                            <option value="5">5 días</option>
+                            <option value="7">7 días</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="config-buttons">
+                <button class="config-button cancel">Cancelar</button>
+                <button class="config-button save">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Mi cuenta -->
+    <div id="accountModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="modal-title">Mi cuenta</span>
+            <button class="close-button" onclick="toggleModal('accountModal')">&times;</button>
+        </div>
+        <div>
+            <!-- Aquí puedes poner la información del usuario -->
+            <p><strong>Nombre:</strong> Juan Pérez</p>
+            <p><strong>Email:</strong> juan.perez@finaxis.com</p>
+            <p><strong>Rol:</strong> Lider de TI</p>
+            <p><strong>Último acceso:</strong> 01 de mayo de 2025</p>
+            <p><strong>Estado:</strong> Activo</p>
+            <p><strong>Fecha de creación:</strong> 01 de enero de 2020</p>
+            <p><strong>Última actualización:</strong> 15 de abril de 2025</p>
+            <p><strong>Configuración de seguridad:</strong></p>
+            <ul>
+                <li>Autenticación de dos factores: Activada</li>
+                <li>Preguntas de seguridad: Activadas</li>
+                <li>Última modificación de contraseña: 15 de abril de 2025</li>
+            </ul>
+            <p><strong>Preferencias de notificación:</strong></p>
+            <ul>
+                <li>Notificaciones por correo electrónico: Activadas</li>
+                <li>Notificaciones por SMS: Desactivadas</li>
+                <li>Notificaciones en la aplicación: Activadas</li>
+        
+        </div>
+    </div>
+    </div>
+
+    <!-- Detalle resumen financiero -->
+    <div id="detailsModal-financiero" class="modal">
+        <div class="modal-content" style="padding: 20px; font-family: Arial, sans-serif; color: #333;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #4a90e2; padding-bottom: 10px;">
+        <span class="modal-title" style="font-size: 24px; color: #4a90e2;">Detalles del Resumen Financiero</span>
+        <button class="close-button" onclick="toggleModal('detailsModal-financiero')" style="font-size: 24px; background: none; border: none; cursor: pointer;">&times;</button>
+        </div>
+        <div class="modal-body" style="margin-top: 20px;">
+        <section>
+            <h3 style="color: #2c3e50;">Resumen General</h3>
+            <div style="display: flex; justify-content: space-around; margin-top: 10px;">
+            <div style="background: #eaf4fc; padding: 15px; border-radius: 8px; width: 28%; text-align: center;">
+                <h4>Ingresos Totales</h4>
+                <p style="font-size: 24px; font-weight: bold; color: #27ae60;">$12,500,000</p>
+                <p style="color: #27ae60;">+8.5% vs. último mes</p>
+            </div>
+            <div style="background: #fceaea; padding: 15px; border-radius: 8px; width: 28%; text-align: center;">
+                <h4>Gastos Totales</h4>
+                <p style="font-size: 24px; font-weight: bold; color: #c0392b;">$8,200.000</p>
+                <p style="color: #c0392b;">-3.2% vs. último mes</p>
+            </div>
+            <div style="background: #eaf9f1; padding: 15px; border-radius: 8px; width: 28%; text-align: center;">
+                <h4>Utilidad Neta</h4>
+                <p style="font-size: 24px; font-weight: bold; color: #16a085;">$4,300,000</p>
+                <p style="color: #16a085;">+15.7% vs. último mes</p>
+            </div>
+            </div>
+        </section>
+
+        <section style="margin-top: 30px;">
+            <h3 style="color: #2c3e50;">Distribución de Gastos</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <canvas id="expenseChart" style="max-width: 400px;"></canvas>
+            <ul style="list-style: none; padding-left: 0; font-size: 14px; color: #555;">
+                <li><span style="display:inline-block;width:12px;height:12px;background:#3498db;margin-right:8px;"></span> Empleados: 35%</li>
+                <li><span style="display:inline-block;width:12px;height:12px;background:#e74c3c;margin-right:8px;"></span> Operaciones: 25%</li>
+                <li><span style="display:inline-block;width:12px;height:12px;background:#f1c40f;margin-right:8px;"></span> Recursos Humanos: 20%</li>
+                <li><span style="display:inline-block;width:12px;height:12px;background:#2ecc71;margin-right:8px;"></span> Tecnología: 15%</li>
+                <li><span style="display:inline-block;width:12px;height:12px;background:#9b59b6;margin-right:8px;"></span> Otros: 5%</li>
+            </ul>
+            </div>
+        </section>
+
+        <section style="margin-top: 30px;">
+            <h3 style="color: #2c3e50;">Flujo de Caja Mensual (Últimos 6 meses)</h3>
+            <canvas id="cashflowChart" style="max-width: 850px;"></canvas>
+        </section>
+
+        <section style="margin-top: 30px;">
+            <h3 style="color: #2c3e50;">Balance General</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #444;">
+            <thead>
+                <tr style="background: #4a90e2; color: white;">
+                <th style="padding: 8px; text-align: left;">Cuenta</th>
+                <th style="padding: 8px; text-align: right;">Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background: #f9f9f9;">
+                <td style="padding: 8px;">Activo Corriente</td>
+                <td style="padding: 8px; text-align: right;">$7,500,000</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">Activo No Corriente</td>
+                <td style="padding: 8px; text-align: right;">$12,000,000</td>
+                </tr>
+                <tr style="background: #f9f9f9;">
+                <td style="padding: 8px;">Pasivo Corriente</td>
+                <td style="padding: 8px; text-align: right;">$4,000,000</td>
+                </tr>
+                <tr>
+                <td style="padding: 8px;">Pasivo No Corriente</td>
+                <td style="padding: 8px; text-align: right;">$6,000,000</td>
+                </tr>
+                <tr style="background: #f9f9f9; font-weight: bold;">
+                <td style="padding: 8px;">Patrimonio Neto</td>
+                <td style="padding: 8px; text-align: right;">$9,500,000</td>
+                </tr>
+            </tbody>
+            </table>
+        </section>
+
+        <section style="margin-top: 30px;">
+            <h3 style="color: #2c3e50;">Indicadores Clave</h3>
+            <div style="display: flex; justify-content: space-around; margin-top: 10px; font-size: 14px;">
+            <div style="background: #dff0d8; padding: 15px; border-radius: 8px; width: 28%; text-align: center;">
+                <h4>Margen Bruto</h4>
+                <p style="font-weight: bold; font-size: 20px; color: #3c763d;">45%</p>
+            </div>
+            <div style="background: #fcf8e3; padding: 15px; border-radius: 8px; width: 28%; text-align: center;">
+                <h4>ROE (Retorno sobre Patrimonio)</h4>
+                <p style="font-weight: bold; font-size: 20px; color: #8a6d3b;">12.5%</p>
+            </div>
+            <div style="background: #d9edf7; padding: 15px; border-radius: 8px; width: 28%; text-align: center;">
+                <h4>Liquidez Corriente</h4>
+                <p style="font-weight: bold; font-size: 20px; color: #31708f;">2.1</p>
+            </div>
+            </div>
+        </section>
+        </div>
+    </div>
+    </div>
+
+    <!-- Modal de Tareas pendientes -->
+    <div id="detailsModal-tareas" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">Detalles de Tareas Pendientes</span>
+                <button class="close-button" onclick="toggleModal('detailsModal-tareas')" style="font-size: 24px; background: none; border: none; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body" style="margin-top: 20px;">
+               <section style="max-width: 700px; margin: 20px auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <h3 style="color: #2c3e50; border-bottom: 3px solid #4a90e2; padding-bottom: 8px; margin-bottom: 20px;">Lista de Tareas</h3>
+            <ul style="list-style: none; padding-left: 0; margin: 0;">
+            <!-- Tarea plantilla -->
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Revisión de presupuesto</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #e74c3c;">Alta prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">Hoy</span>
+            </li>
+
+            <!-- Aquí van las demás tareas -->
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Reunión con contador</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #f39c12;">Media prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">09 May, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Actualizar proyecciones</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #27ae60;">Baja prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">14 May, 2025</span>
+            </li>
+
+            <!-- Agrego 17 tareas más -->
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Preparar informe trimestral</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #e74c3c;">Alta prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">20 May, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Revisión de auditoría</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #f39c12;">Media prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">25 May, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Planificación de presupuesto Q3</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #e74c3c;">Alta prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">30 May, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Reunión de estrategia financiera</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #f39c12;">Media prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">05 Jun, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Actualizar sistema contable</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #27ae60;">Baja prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">10 Jun, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Preparar presentación anual</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #e74c3c;">Alta prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">15 Jun, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Revisión de políticas internas</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #f39c12;">Media prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">20 Jun, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Capacitación en nuevas normativas</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #27ae60;">Baja prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">25 Jun, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Auditoría interna Q2</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #e74c3c;">Alta prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">30 Jun, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Actualizar manual de procedimientos</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #f39c12;">Media prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">05 Jul, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Revisión de contratos</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #27ae60;">Baja prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">10 Jul, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Planificación fiscal anual</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #e74c3c;">Alta prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">15 Jul, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Evaluación de riesgos</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #f39c12;">Media prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">20 Jul, 2025</span>
+            </li>
+
+            <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #fff;">
+            <div>
+                <strong style="font-size: 16px; color: #34495e;">Capacitación en software financiero</strong>
+                <span style="display: inline-block; margin-left: 10px; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 600; color: #fff; background-color: #27ae60;">Baja prioridad</span>
+            </div>
+            <span style="font-size: 14px; color: #7f8c8d; white-space: nowrap;">25 Jul, 2025</span>
+            </li>
+        </ul>
+        </section>
+     
+    
+    <!-- Scripts -->
+    <script>
+        // Función para mostrar y ocultar modales
+        function toggleModal(modalId) {
+            var modal = document.getElementById(modalId);
+            if (modal.style.display === "block") {
+                modal.style.display = "none";
+            } else {
+                modal.style.display = "block";
+            }
+        }
+        
+        // Cerrar el modal si se hace clic fuera del contenido
+        window.onclick = function(event) {
+            var modals = document.getElementsByClassName("modal");
+            for (var i = 0; i < modals.length; i++) {
+                if (event.target === modals[i]) {
+                    modals[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+<!-- Agrega Chart.js para gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // Función para mostrar/ocultar modales
+  function toggleModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (modal.style.display === "block") {
+      modal.style.display = "none";
+    } else {
+      // Cierra otros modales abiertos
+      document.querySelectorAll('.modal').forEach(function(m) {
+        m.style.display = "none";
+      });
+      modal.style.display = "block";
+    }
+  }
+
+  // Gráfico de distribución de gastos (Dona)
+  const ctxExpense = document.getElementById('expenseChart').getContext('2d');
+  const expenseChart = new Chart(ctxExpense, {
+    type: 'doughnut',
+    data: {
+      labels: ['Marketing', 'Operaciones', 'Recursos Humanos', 'Tecnología', 'Otros'],
+      datasets: [{
+        data: [35, 25, 20, 15, 5],
+        backgroundColor: ['#3498db', '#e74c3c', '#f1c40f', '#2ecc71', '#9b59b6'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: false,
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Gráfico de flujo de caja mensual (Barras)
+  const ctxCashflow = document.getElementById('cashflowChart').getContext('2d');
+  const cashflowChart = new Chart(ctxCashflow, {
+    type: 'bar',
+    data: {
+      labels: ['Nov', 'Dic', 'Ene', 'Feb', 'Mar', 'Abr'],
+      datasets: [
+        {
+          label: 'Ingresos',
+          data: [20000000, 22000000, 21000000, 23000000, 25000000, 27000000],
+          backgroundColor: '#27ae60'
+        },
+        {
+          label: 'Gastos',
+          data: [15000000, 16000000, 15500000, 16500000, 17000000, 18000000],
+          backgroundColor: '#c0392b'
+        }
+      ]
+    },
+    options: {
+      responsive: false,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+</script>
+</body>
+</html>
